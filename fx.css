@@ -1739,3 +1739,30 @@ body.tm2.tm2.tm2 .fx-tile .fx-cico-i,body.tm2.tm2.tm2 .fx-tile:hover .fx-cico-i{
 body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile.on .fx-cico-i{background:rgba(222,87,24,.13)!important;color:#E9805A!important;border:0!important}
 body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile.on{background:#fff!important;border:2.5px solid var(--tm-br)!important;color:var(--tm-br)!important;box-shadow:none!important;transform:none!important}
 body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile.on span,body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-otiles .fx-tile.on span,body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-pagehead .fx-tile.on span{color:var(--tm-br)!important}
+
+/* ===== v42: لوجو إنجليزي تخين • عنوان القسم • السلة • الفوتر • الحساب ===== */
+:root{--mg:#DE5718;--mg-d:#C4480F;--mg-t:#F4F1E9;--mg-ln:#E6DCC8;--p-green:#5A3114;--p-dark:#5A3114;--p-lgreen:#F9B914}
+header.navbar .logo .logo-swap .lg-en{font-family:'Baloo Bhaijaan 2','Cairo',sans-serif!important;font-weight:800!important;letter-spacing:0!important;white-space:nowrap;line-height:1.3!important}
+@media(min-width:769px){header.navbar .logo .logo-swap .lg-en{font-size:2.15rem!important}}
+@media(max-width:768px){body.tm2.tm2.tm2 header.navbar .logo .logo-swap .lg-en{font-size:min(5vw,1.3rem)!important}}
+@media(max-width:360px){body.tm2.tm2.tm2 header.navbar .logo .logo-swap .lg-en{font-size:4.8vw!important}}
+.tmc{width:1.35em;height:1.15em;vertical-align:-.22em}
+/* أيقونة عنوان القسم: دايرة بنية وأيقونة أوف وايت */
+html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .section-header i.fx-cico-i,html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .section-header>i{display:inline-flex!important;align-items:center;justify-content:center;width:40px!important;height:40px!important;border-radius:50%!important;background:var(--tm-br)!important;color:var(--tm-ofl)!important;font-size:1.05rem!important;border:0!important;box-shadow:none!important}
+/* سلة المشتريات: سطر للاسم + الكمية، وسطر للسعر */
+body.tm2.tm2.tm2 .cart-item{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;grid-template-areas:"nm qty rm" "pr pr tot"!important;gap:4px 8px!important;align-items:center!important;padding:10px 12px!important}
+body.tm2.tm2.tm2 .cart-item .ci-info,body.tm2.tm2.tm2 .cart-item .ci-side{display:contents!important}
+body.tm2.tm2.tm2 .cart-item .ci-info strong{grid-area:nm;font-size:.95rem!important;line-height:1.3;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:auto!important;display:block!important}
+body.tm2.tm2.tm2 .cart-item .ci-info small{grid-area:pr;font-size:.8rem;color:#8a6a4e!important}
+body.tm2.tm2.tm2 .cart-item .ci-qty{grid-area:qty!important;margin:0!important}
+body.tm2.tm2.tm2 .cart-item .ci-side>strong{grid-area:tot!important;color:var(--tm-or)!important;text-align:left;font-size:.95rem}
+body.tm2.tm2.tm2 .cart-item .ci-rm{grid-area:rm!important;margin:0!important;padding:4px!important}
+/* الفوتر: كل الأيقونات أوف وايت */
+body.tm2.tm2.tm2 .fx-footer i,body.tm2.tm2.tm2 .ft-contact i,body.tm2.tm2.tm2 .site-footer i{color:var(--tm-of)!important}
+body.tm2.tm2.tm2 .fx-footer a:hover i{color:var(--tm-ye)!important}
+/* الحساب: بدون أخضر */
+body.tm2.tm2.tm2 .acct-btn:active,body.tm2.tm2.tm2 .search-btn:active,body.tm2.tm2.tm2 .acct-btn.logged:active{background:var(--tm-or)!important;color:var(--tm-ofl)!important;border-color:var(--tm-or)!important}
+body.tm2.tm2.tm2 .acct-btn.logged::after{background:var(--tm-or)!important;border-color:var(--tm-of)!important}
+body.tm2.tm2.tm2 .acct-btn.logged:hover{background:var(--tm-or)!important;color:var(--tm-ofl)!important}
+body.tm2.tm2.tm2 :is(.acct-modal,.acct-card,.acct-panel) :is(button:not(.acct-main),a):not(.acct-main){border-color:var(--tm-ln)}
+body.tm2.tm2.tm2 :is(.acct-modal,.acct-card,.acct-panel) :is(.acct-edit,.acct-logout,.acct-wipe,[data-acct]){color:var(--tm-or)!important}
