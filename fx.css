@@ -1735,8 +1735,8 @@ header.navbar .logo .logo-swap .lg-cart{height:1.55em!important;width:1.95em!imp
 }
 @media(max-width:360px){body.tm2.tm2.tm2 header.navbar .logo .logo-swap .lg-ar{font-size:6.3vw!important}body.tm2.tm2.tm2 header.navbar .logo .logo-swap .lg-en{font-size:3.7vw!important}}
 /* مربعات الأقسام: أيقونة فاتحة داخل دايرة، والتحديد فريم بس */
-body.tm2.tm2.tm2 .fx-tile .fx-cico-i,body.tm2.tm2.tm2 .fx-tile:hover .fx-cico-i{background:rgba(222,87,24,.13)!important;color:#E9805A!important;border-radius:50%!important}
-body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile.on .fx-cico-i{background:rgba(222,87,24,.13)!important;color:#E9805A!important;border:0!important}
+body.tm2.tm2.tm2 .fx-tile .fx-cico-i,body.tm2.tm2.tm2 .fx-tile:hover .fx-cico-i{background:transparent!important;color:#DE5718!important;border-radius:0!important;box-shadow:none!important}
+body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile.on .fx-cico-i{background:transparent!important;color:#DE5718!important;border:0!important;box-shadow:none!important}
 body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile.on{background:#fff!important;border:2.5px solid var(--tm-br)!important;color:var(--tm-br)!important;box-shadow:none!important;transform:none!important}
 body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile.on span,body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-otiles .fx-tile.on span,body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-pagehead .fx-tile.on span{color:var(--tm-br)!important}
 
@@ -1748,7 +1748,7 @@ header.navbar .logo .logo-swap .lg-en{font-family:'Baloo Bhaijaan 2','Cairo',san
 @media(max-width:360px){body.tm2.tm2.tm2 header.navbar .logo .logo-swap .lg-en{font-size:4.8vw!important}}
 .tmc{width:1.35em;height:1.15em;vertical-align:-.22em}
 /* أيقونة عنوان القسم: دايرة بنية وأيقونة أوف وايت */
-html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .section-header i.fx-cico-i,html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .section-header>i{display:inline-flex!important;align-items:center;justify-content:center;width:40px!important;height:40px!important;border-radius:50%!important;background:var(--tm-br)!important;color:var(--tm-ofl)!important;font-size:1.05rem!important;border:0!important;box-shadow:none!important}
+html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .section-header i.fx-cico-i,html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .section-header>i{display:inline-flex!important;align-items:center;justify-content:center;width:40px!important;height:40px!important;border-radius:50%!important;background:#DE5718!important;color:#FCFAF5!important;font-size:1.05rem!important;border:0!important;box-shadow:none!important}
 /* سلة المشتريات: سطر للاسم + الكمية، وسطر للسعر */
 body.tm2.tm2.tm2 .cart-item{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;grid-template-areas:"nm qty rm" "pr pr tot"!important;gap:4px 8px!important;align-items:center!important;padding:10px 12px!important}
 body.tm2.tm2.tm2 .cart-item .ci-info,body.tm2.tm2.tm2 .cart-item .ci-side{display:contents!important}
@@ -1766,3 +1766,7 @@ body.tm2.tm2.tm2 .acct-btn.logged::after{background:var(--tm-or)!important;borde
 body.tm2.tm2.tm2 .acct-btn.logged:hover{background:var(--tm-or)!important;color:var(--tm-ofl)!important}
 body.tm2.tm2.tm2 :is(.acct-modal,.acct-card,.acct-panel) :is(button:not(.acct-main),a):not(.acct-main){border-color:var(--tm-ln)}
 body.tm2.tm2.tm2 :is(.acct-modal,.acct-card,.acct-panel) :is(.acct-edit,.acct-logout,.acct-wipe,[data-acct]){color:var(--tm-or)!important}
+
+/* v43: أيقونات الأقسام برتقالي الهوية بدون هالة • شلت نقطة الحساب */
+body.tm2.tm2.tm2 .acct-btn.logged::after,body.tm2.tm2.tm2 .acct-btn::after,body.tm2.tm2.tm2 .acct-btn::before{display:none!important;content:none!important}
+html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile .fx-cico-i{background:transparent!important;color:#DE5718!important;border:0!important;box-shadow:none!important;border-radius:0!important}
