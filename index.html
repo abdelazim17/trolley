@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6200">
+    <meta name="description" content="ترولي ماركت — كل طلبات البيت لحد البيت. اطلب من واتساب في ثواني.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_EG">
+    <meta property="og:title" content="ترولي ماركت">
+    <meta property="og:description" content="كل طلبات البيت لحد البيت — اطلب من واتساب في ثواني">
+    <meta property="og:image" content="images/share.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <title>ترولي ماركت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Cairo:wght@200..1000&family=Monoton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=20261029b">
+    <link rel="stylesheet" href="fx.css?v=20261029b">
+</head>
+<body class="tm2">
+    <header class="navbar">
+        <a class="logo" href="#home" aria-label="الرئيسية">
+            <div class="logo-swap">
+                <b class="lg lg-ar" id="logo-name">ترولي ماركت</b>
+                <b class="lg lg-en" id="logo-en" dir="ltr">TROLLEY MARKET</b>
+                <svg class="lg-cart" viewBox="0 0 48 38" aria-hidden="true"><g transform="rotate(-5 24 20)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 8.6C14 7 26 7 36 8.6L33.4 22.4C25 24 15.5 23.6 11.6 22.4 8 20 5 13.5 5.6 8.6Z" fill="currentColor" fill-opacity=".16" stroke-width="2.4"/><path d="M13 8.4l2.6 14.4M20 8l1.6 15.2M27 8.3l.9 14.8M7 13.4c9-1 19-1 28.6-.3M8.6 18.4c8.4-.6 17.4-.6 25.4-.6" stroke-width="1.7"/><path d="M10.6 26.4c8-1.4 18-1.2 27 .6" stroke-width="3"/><path d="M44.4 4.4c-3.6-.4-5.6 2.8-6.2 8L36.6 26.6" stroke-width="3.1"/><circle cx="44.6" cy="4.4" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="33" r="3.5" stroke-width="2"/><circle cx="32" cy="33" r="3.5" stroke-width="2"/></g></svg>
+            </div>
+        </a>
+        <nav class="nav-links">
+            <a href="#home" data-target="home" class="active">الرئيسية</a>
+            <a href="#categories" data-target="categories">الأقسام</a>
+            <a href="#catalog" data-target="catalog">العروض</a>
+            <a href="#about" data-target="about">حول</a>
+        </nav>
+        <div class="actions-container">
+            <button class="search-btn" data-action="toggle-search" title="بحث" aria-label="بحث"><i class="fas fa-search"></i></button>
+            <button class="acct-btn" id="acct-btn" data-action="account" aria-label="حسابي"><i class="fas fa-user"></i><span id="acct-label">حسابي</span></button>
+            <button class="cart-btn" data-action="toggle-cart"><svg class="tmc" viewBox="0 0 48 38" aria-hidden="true"><g transform="rotate(-5 24 20)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 8.6C14 7 26 7 36 8.6L33.4 22.4C25 24 15.5 23.6 11.6 22.4 8 20 5 13.5 5.6 8.6Z" fill="currentColor" fill-opacity=".16" stroke-width="2.4"/><path d="M13 8.4l2.6 14.4M20 8l1.6 15.2M27 8.3l.9 14.8M7 13.4c9-1 19-1 28.6-.3M8.6 18.4c8.4-.6 17.4-.6 25.4-.6" stroke-width="1.7"/><path d="M10.6 26.4c8-1.4 18-1.2 27 .6" stroke-width="3"/><path d="M44.4 4.4c-3.6-.4-5.6 2.8-6.2 8L36.6 26.6" stroke-width="3.1"/><circle cx="44.6" cy="4.4" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="33" r="3.5" stroke-width="2"/><circle cx="32" cy="33" r="3.5" stroke-width="2"/></g></svg> السلة <span id="cart-count">0</span></button>
+        </div>
+    </header>
+
+    <nav class="mobile-top-nav">
+        <a href="#home" data-target="home" class="active"><i class="fas fa-home"></i>الرئيسية</a>
+        <a href="#categories" data-target="categories"><i class="fas fa-th-large"></i>الأقسام</a>
+        <a href="#catalog" data-target="catalog"><i class="fas fa-tags"></i>العروض</a>
+        <a href="#about" data-target="about"><i class="fas fa-info-circle"></i>حول</a>
+    </nav>
+
+    <div id="announce-bar" class="announce-bar" style="display:none;"></div>
+
+    <div id="global-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <div>جاري تحميل المتجر...</div>
+    </div>
+
+    <div id="app-content" style="display:none;">
+
+        <!-- HOME -->
+        <div id="page-home" class="page-view">
+            <section class="static-banner top-main-banner" id="sec-banner-top"><a class="banner-link" id="banner-top"><img alt=""></a></section>
+
+            <div class="swipe-slider-container" id="slider-wrap">
+                <div class="slider-stage">
+                    <div class="swipe-slider" id="main-swipe-slider"></div>
+                    <button class="slider-arrow arrow-right" data-slider="prev" aria-label="السابق"><i class="fas fa-chevron-right"></i></button>
+                    <button class="slider-arrow arrow-left" data-slider="next" aria-label="التالي"><i class="fas fa-chevron-left"></i></button>
+                </div>
+                <div class="slider-dots" id="slider-dots"></div>
+            </div>
+
+            <section class="split-banners" id="sec-banner-split">
+                <div class="half-banner"><a class="banner-link" id="banner-split1"><img alt=""></a></div>
+                <div class="half-banner"><a class="banner-link" id="banner-split2"><img alt=""></a></div>
+                <div class="half-banner"><a class="banner-link" id="banner-split3"><img alt=""></a></div>
+                <div class="half-banner"><a class="banner-link" id="banner-split4"><img alt=""></a></div>
+            </section>
+            <section class="static-banner" id="sec-banner-main"><a class="banner-link" id="banner-main"><img alt=""></a></section>
+
+            <div class="quick-links-wrapper" id="quick-wrap"><div class="quick-links-scroll" id="quick-links-container"></div></div>
+            <main class="products-section"><div id="home-sections"></div></main>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div id="page-categories" class="page-view" style="display:none;">
+            <div class="category-filter-bar" id="category-filter-bar"></div>
+            <div class="sort-bar">
+                <label for="sort-select"><i class="fas fa-sort"></i> ترتيب:</label>
+                <select id="sort-select">
+                    <option value="default">الافتراضي</option>
+                    <option value="asc">الأقل سعراً</option>
+                    <option value="desc">الأعلى سعراً</option>
+                    <option value="disc">الأكبر خصماً</option>
+                </select>
+            </div>
+            <main class="products-section"><div id="categories-sections"></div></main>
+        </div>
+
+        <!-- CATALOG -->
+        <div id="page-catalog" class="page-view" style="display:none;">
+            <div class="catalog-container">
+                <h1 id="catalog-title" style="margin-bottom:30px;">العروض</h1>
+                <div id="catalog-pages-container"></div>
+            </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div id="page-orders" class="page-view" style="display:none;"><div class="orders-container" id="orders-box"></div></div>
+
+        <!-- ABOUT -->
+        <div id="page-about" class="page-view" style="display:none;">
+            <div class="about-container">
+                <img id="about-main-img" class="about-main-img" alt="">
+                <h1 id="about-title">ترولي ماركت</h1>
+                <p id="about-desc-1"></p>
+                <p id="about-desc-2"></p>
+
+                <div class="info-glass" id="info-glass" style="display:none;"></div>
+
+                <div class="social-glass-icons" id="social-icons">
+                    <a id="wa-social-link" class="glass-icon" target="_blank" rel="noopener" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                    <a id="fb-link" class="glass-icon" target="_blank" rel="noopener" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                    <a id="ig-link" class="glass-icon" target="_blank" rel="noopener" aria-label="إنستجرام"><i class="fab fa-instagram"></i></a>
+                    <a id="tt-link" class="glass-icon" target="_blank" rel="noopener" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
+                    <a id="yt-link" class="glass-icon" target="_blank" rel="noopener" aria-label="يوتيوب"><i class="fab fa-youtube"></i></a>
+                    <a id="tg-link" class="glass-icon" target="_blank" rel="noopener" aria-label="تيليجرام"><i class="fab fa-telegram"></i></a>
+                    <a id="x-link" class="glass-icon" target="_blank" rel="noopener" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
+                    <a id="map-link" class="glass-icon" target="_blank" rel="noopener" aria-label="الموقع على الخريطة"><i class="fas fa-location-dot"></i></a>
+                </div>
+
+                <div class="about-grid">
+                    <div class="qr-card" id="card-channel">
+                        <h3 id="qr-channel-title"></h3>
+                        <img id="qr-channel-img" alt="">
+                        <a id="channel-link" href="#" class="btn-primary" target="_blank" rel="noopener"></a>
+                    </div>
+                    <div class="qr-card" id="card-web">
+                        <h3 id="qr-web-title"></h3>
+                        <img id="qr-website-img" alt="">
+                        <button data-action="share" id="website-btn" class="btn-secondary"></button>
+                    </div>
+                    <div class="qr-card" id="card-contact">
+                        <h3 id="qr-contact-title"></h3>
+                        <img id="qr-whatsapp-img" alt="">
+                        <a id="wa-link" href="#" class="btn-primary" target="_blank" rel="noopener"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer" id="site-footer" style="display:none;"></footer>
+    <a class="wa-float" id="wa-float" target="_blank" rel="noopener" aria-label="واتساب" style="display:none;"><i class="fab fa-whatsapp"></i></a>
+
+    <!-- Overlay / modals -->
+    <div class="overlay" id="overlay" data-action="close-overlays"></div>
+
+    <div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="بحث">
+        <div class="search-header">
+            <input type="search" id="search-input" placeholder="اكتب اسم المنتج الذي تبحث عنه..." autocomplete="off">
+            <button data-action="toggle-search" class="close-search" aria-label="إغلاق">&times;</button>
+        </div>
+        <div class="search-results" id="search-results"></div>
+    </div>
+
+    <div class="acct-modal" id="acct-modal" role="dialog" aria-modal="true" aria-label="حسابي">
+        <button class="acct-close" data-action="close-overlays" aria-label="إغلاق">&times;</button>
+        <div id="acct-body"></div>
+    </div>
+
+    <div class="lightbox" id="lightbox" data-action="close-lightbox"><img alt=""></div>
+    <div class="toast-msg" id="toast-msg"></div>
+
+    <aside class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header"><h3>سلة المشتريات</h3><button class="close-cart" data-action="toggle-cart" aria-label="إغلاق">&times;</button></div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer">
+            <div id="cart-progress"></div>
+            <div class="cart-summary" id="cart-summary"></div>
+            <div class="cart-form">
+                <input type="text" id="cust-name" placeholder="الاسم (اختياري)" autocomplete="name">
+                <input type="tel" id="cust-phone" placeholder="رقم الموبايل (للتواصل)" autocomplete="tel" inputmode="tel">
+                <input type="text" id="cust-address" placeholder="العنوان (اختياري)" autocomplete="street-address">
+                <input type="text" id="cust-landmark" placeholder="علامة مميزة قريبة (مثال: جنب صيدلية.. / ناصية..)">
+                <input type="text" id="cust-notes" placeholder="ملاحظات على الطلب (اختياري)">
+                <input type="text" id="cust-title" placeholder="اسم للطلب ده (اختياري) — مثال: طلب الخضار الأسبوعي" maxlength="40">
+                <div class="pay-box" id="pay-box"><label for="cust-pay">طريقة الدفع</label><select id="cust-pay"></select><div class="pay-note" id="pay-note"></div></div>
+            </div>
+            <div class="cart-warn" id="cart-warn"></div>
+            <button class="checkout-btn" id="checkout-btn" data-action="checkout"><i class="fab fa-whatsapp"></i> إرسال الطلب واتساب</button>
+            <button class="inv-extract-btn" data-extract="1"><i class="fas fa-file-invoice"></i> استخراج الفاتورة</button>
+            
+        </div>
+    </aside>
+
+    <script src="app.js?v=20261029b"></script>
+    <script src="fx.js?v=20261029b"></script>
+</body>
+</html>
