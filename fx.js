@@ -33,7 +33,7 @@ function hero(){
   if(mob)so.setAttribute('srcset',mob);else so.remove();
   if(dsk)im.src=dsk;else if(mob)im.src=mob;else h.style.display='none';
   im.onerror=function(){if(!im.dataset.fb){im.dataset.fb=1;so&&so.remove();im.src='images/hero.svg'}else h.classList.add('fx-noart')};
-  if(yes('إظهار أقسام الصفحة الرئيسية')){var cn=TM.cats.length,tt=tiles(cn,false);tt.style.setProperty('--cols-d',Math.min(4,cn)>=cn?cn:Math.ceil(cn/2));tt.style.setProperty('--cols-m',Math.min(4,cn));var cs=document.createElement('section');cs.className='fx-cats';cs.appendChild(tt);window.__fxCats=cs}else window.__fxCats=null;
+  window.__fxCats=null;
   home.insertBefore(h,home.firstChild);
   if(false&&yes('إظهار الشريط المتحرك')){var t=document.createElement('div');t.className='fx-ticker';
     var o=TM.offers.slice(0,12).map(function(p){try{return String(p['الاسم']||'').trim()+' '+TM.fmt(TM.priceInfo(p).price)+' '+TM.cur()}catch(e){return ''}}).filter(Boolean);
@@ -200,4 +200,4 @@ function boot(){arm();vids();hero();capsule();tick();mo.observe(document.getElem
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 var n=0,iv=setInterval(function(){hero();capsule();heads();about();shares();cartExtras();paint();offers();themeSet();palette();placeBanners();payInit();footer();searchChips();viewFix();arm();vids();tick();if(++n>40)clearInterval(iv)},500);
 })();
-/* ترولي ماركت فيرجن 1 */
+/* ترولي ماركت فيرجن 2 */
