@@ -1628,7 +1628,7 @@ body.tm2.tm2.tm2 .search-capsule i,body.tm2.tm2.tm2 .search-capsule svg{color:va
 /* هيرو = صورة كبيرة */
 body.tm2.tm2.tm2 .fx-hero.fx-hero-img{display:block!important;padding:0!important;margin:0 0 18px!important;max-width:none!important;width:100%!important;background:var(--tm-or)!important;border:0!important;box-shadow:none!important;border-radius:0 0 30px 30px!important;overflow:hidden}
 body.tm2.tm2.tm2 .fx-hero-link{display:block}
-body.tm2.tm2.tm2 .fx-hero-img img{display:block;width:100%;height:auto;aspect-ratio:2/1;max-height:82vh;object-fit:cover;object-position:center bottom}
+body.tm2.tm2.tm2 .fx-hero-img img{display:block;width:100%;height:auto;aspect-ratio:16/9;max-height:90vh;object-fit:cover;object-position:center bottom}
 @media(max-width:700px){body.tm2.tm2.tm2 .fx-hero-img img{height:auto;aspect-ratio:4/5;max-height:76vh}body.tm2.tm2.tm2 .fx-hero.fx-hero-img{border-radius:0 0 24px 24px!important}}
 /* مربعات الأقسام */
 body.tm2.tm2.tm2 .fx-tile{background:var(--tm-of)!important;border:2px solid var(--tm-ln)!important;border-radius:20px!important;box-shadow:none!important;color:var(--tm-br)!important;transition:border-color .18s,transform .18s,background .18s}
@@ -1770,3 +1770,8 @@ body.tm2.tm2.tm2 :is(.acct-modal,.acct-card,.acct-panel) :is(.acct-edit,.acct-lo
 /* v43: أيقونات الأقسام برتقالي الهوية بدون هالة • شلت نقطة الحساب */
 body.tm2.tm2.tm2 .acct-btn.logged::after,body.tm2.tm2.tm2 .acct-btn::after,body.tm2.tm2.tm2 .acct-btn::before{display:none!important;content:none!important}
 html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile .fx-cico-i{background:transparent!important;color:#DE5718!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+
+/* v44: زر إغلاق الفاتورة باين */
+body.tm2.tm2.tm2 .inv-actions button[data-inv=close],body.tm2.tm2.tm2 .inv-actions button[data-inv=save]{background:var(--tm-br)!important;color:var(--tm-ofl)!important;border:2px solid var(--tm-ofl)!important;font-weight:800!important}
+body.tm2.tm2.tm2 .inv-actions button[data-inv=close] *{color:var(--tm-ofl)!important}
+/* ترولي ماركت فيرجن 1 */

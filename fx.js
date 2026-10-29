@@ -182,7 +182,7 @@ function about(){
   var w=document.createElement('div');w.className='ab-wrap';
   var h='<div class="ab-stats"><div><b>'+n+'+</b><span>منتج</span></div><div><b>'+c+'</b><span>قسم</span></div><div><b>'+(fr?fr+' '+cur:'24/7')+'</b><span>'+(fr?'توصيل مجاني فوق':'اطلب في أي وقت')+'</span></div></div>';
   h+=(abs.length?'<div class="ab-about">'+abs.map(function(){return '<div class="ab-card"><h3></h3><p></p></div>'}).join('')+'</div>':'')+'<div class="ab-grid">'+feats.map(function(){return '<div class="ab-card"><h3></h3><p></p></div>'}).join('')+'</div>';
-  h+='<div class="ab-steps"><div><i>1</i>اختار منتجاتك</div><div><i>2</i>راجع السلة</div><div><i>3</i>ابعت الطلب واتساب</div></div>';
+  h+=(function(){var st=[1,2,3].map(function(k){return String(S_('خطوة '+k,['اختار منتجاتك','راجع السلة','ابعت الطلب واتساب'][k-1])).trim()}).filter(Boolean);return /^(لا|no)$/i.test(String(S_('إظهار خطوات الطلب','نعم')).trim())||!st.length?'':'<div class="ab-steps">'+st.map(function(t,i){return '<div><i>'+(i+1)+'</i>'+t.replace(/[<>&]/g,'')+'</div>'}).join('')+'</div>'})();
   w.innerHTML=h;
   w.querySelectorAll('.ab-about .ab-card').forEach(function(el,i){el.querySelector('h3').textContent=abs[i][0];el.querySelector('p').textContent=abs[i][1]});
   w.querySelectorAll('.ab-grid .ab-card').forEach(function(el,i){el.querySelector('h3').textContent=feats[i][0];el.querySelector('p').textContent=feats[i][1]||''});
@@ -200,3 +200,4 @@ function boot(){arm();vids();hero();capsule();tick();mo.observe(document.getElem
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 var n=0,iv=setInterval(function(){hero();capsule();heads();about();shares();cartExtras();paint();offers();themeSet();palette();placeBanners();payInit();footer();searchChips();viewFix();arm();vids();tick();if(++n>40)clearInterval(iv)},500);
 })();
+/* ترولي ماركت فيرجن 1 */

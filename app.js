@@ -815,7 +815,7 @@ function renderOrdersPage() {
     box.innerHTML = head + list.map(({ h, i }) => {
         const d = new Date(h.ts), qty = h.items.reduce((s2, x) => s2 + x.qty, 0);
         return `<article class="ord-card" data-i="${i}">
-            <div class="ord-top"><div class="ord-title"><b class="ord-name">${esc(h.title || 'طلب بدون اسم')}</b><button class="ord-edit" data-ord="rename" aria-label="تسمية الطلب"><i class="fas fa-pen"></i></button></div><small>${ltr(h.no)}</small></div>
+            <div class="ord-top"><div class="ord-title"><b class="ord-name">فاتورة ${ltr(h.no)}</b></div></div>
             <div class="ord-meta">${esc(d.toLocaleDateString('ar-EG'))} — ${esc(d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }))} • ${qty} قطعة</div>${h.address ? `<div class="ord-addr"><i class="fas fa-location-dot"></i> ${esc(h.address)}</div>` : ''}
             <ul class="ord-items">${h.items.map(x => `<li><span>${esc(x.name)}${x.variant ? ' (' + esc(x.variant) + ')' : ''}</span><b>× ${x.qty}</b></li>`).join('')}</ul>
             <div class="ord-foot"><strong>الإجمالي: ${fmt(h.total)} ${c}</strong><div class="ord-btns"><button class="ord-inv" data-ord="invoice"><i class="fas fa-file-invoice"></i> استخراج الفاتورة</button><button class="ord-again" data-ord="again">اطلب تاني</button></div></div>
@@ -828,7 +828,7 @@ async function buildInvoiceBlobs(h, mime) {
     const W = 760, P = 36, NAMEW = 270, F = 'Cairo, Tahoma, Arial, sans-serif', c = cur(), store = str(S['اسم المتجر']) || 'ترولي ماركت', d = new Date(h.ts);
     const rows = h.items.map(x => { let u = x.price; if (u == null) { const p = allProducts.find(z => str(z['الاسم']) === x.name); u = p ? priceInfo(p).price : null; } return { name: x.name + (x.variant ? ' (' + x.variant + ')' : ''), qty: x.qty, u }; });
     const sub = h.sub != null ? h.sub : rows.reduce((s2, r) => s2 + (r.u || 0) * r.qty, 0), delivery = h.delivery != null ? h.delivery : Math.max(0, h.total - sub);
-    const meta = [['التاريخ', d.toLocaleDateString('ar-EG') + ' — ' + d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })], ['اسم الطلب', h.title], ['العميل', h.name], ['الموبايل', h.phone], ['العنوان', h.address], ['طريقة الدفع', h.payment]].filter(m => m[1]);
+    const meta = [['التاريخ', d.toLocaleDateString('ar-EG') + ' — ' + d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })], ['العميل', h.name], ['الموبايل', h.phone], ['العنوان', h.address], ['علامة مميزة', h.landmark], ['طريقة الدفع', h.payment]].filter(m => m[1]);
     const chunks = []; for (let i = 0; i < rows.length; i += 40) chunks.push(rows.slice(i, i + 40)); if (!chunks.length) chunks.push([]);
     const wrap = (g, text, maxW) => { const out = []; let line = ''; String(text).split(' ').forEach(w => { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t; }); out.push(line); return out; };
     const draw = (g, items, pi, last) => {
@@ -921,7 +921,7 @@ document.addEventListener('click', (e) => {
     if (!e.target.closest('[data-extract]')) return;
     if (!cart.length) { toast('السلة فاضية'); return; }
     const t = totals(), g = (id) => { const el = $(id); return el ? str(el.value) : ''; };
-    showInvoice({ no: 'فاتورة مبدئية', ts: new Date().toISOString(), phone: g('cust-phone'), name: g('cust-name'), address: g('cust-address'), payment: g('cust-pay'), title: g('cust-title'), sub: t.sub, delivery: t.delivery, total: t.total, items: cart.map(i => ({ name: i.base, variant: i.variant, qty: i.qty, price: i.price })) });
+    showInvoice({ no: 'فاتورة مبدئية', ts: new Date().toISOString(), phone: g('cust-phone'), name: g('cust-name'), address: g('cust-address'), payment: g('cust-pay'), landmark: g('cust-landmark'), sub: t.sub, delivery: t.delivery, total: t.total, items: cart.map(i => ({ name: i.base, variant: i.variant, qty: i.qty, price: i.price })) });
 });
 window.tmInvoice = { build: buildInvoiceBlobs, share: shareInvoice };
 
@@ -935,8 +935,8 @@ function showInvoice(h) {
     const line = (k, v, l) => v ? `<div><span>${k}</span><b>${l ? ltr(v) : esc(v)}</b></div>` : '';
     m.innerHTML = `<div class="inv-wrap"><div class="inv-sheet">
         <div class="inv-head"><div><h2>${esc(str(S['اسم المتجر']) || 'ترولي ماركت')}</h2><p>${ltr(str(S['رقم التليفون المعروض']) || '')}</p></div><div class="inv-tag"><b>فاتورة</b><span>${esc(h.no)}</span></div></div>
-        <div class="inv-meta">${line('التاريخ', d.toLocaleDateString('ar-EG') + ' — ' + d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }))}${line('اسم الطلب', h.title)}${line('العميل', h.name)}${line('الموبايل', h.phone, 1)}${line('العنوان', h.address)}${line('طريقة الدفع', h.payment)}</div>
-        <table class="inv-table"><thead><tr><th>#</th><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${rows.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.x.name)}${r.x.variant ? ' (' + esc(r.x.variant) + ')' : ''}</td><td>${r.x.qty}</td><td>${r.u !== null ? fmt(r.u) : '—'}</td><td>${r.u !== null ? fmt(r.u * r.x.qty) : '—'}</td></tr>`).join('')}</tbody></table>
+        <div class="inv-meta">${line('التاريخ', d.toLocaleDateString('ar-EG') + ' — ' + d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }))}${line('العميل', h.name)}${line('الموبايل', h.phone, 1)}${line('العنوان', h.address)}${line('علامة مميزة', h.landmark)}${line('طريقة الدفع', h.payment)}</div>
+        <table class="inv-table"><thead><tr><th>#</th><th>الطلب</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${rows.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.x.name)}${r.x.variant ? ' (' + esc(r.x.variant) + ')' : ''}</td><td>${r.x.qty}</td><td>${r.u !== null ? fmt(r.u) : '—'}</td><td>${r.u !== null ? fmt(r.u * r.x.qty) : '—'}</td></tr>`).join('')}</tbody></table>
         <div class="inv-totals"><div><span>المجموع</span><b>${fmt(sub)} ${c}</b></div><div><span>التوصيل</span><b>${delivery ? fmt(delivery) + ' ' + c : 'مجاني'}</b></div><div class="g"><span>الإجمالي</span><b>${fmt(h.total)} ${c}</b></div></div>
         <p class="inv-foot">شكراً لتعاملك مع ${esc(str(S['اسم المتجر']) || 'ترولي ماركت')}</p></div>
         <div class="inv-actions"><button data-inv="share"><i class="fas fa-image"></i> إرسال كصورة</button><button data-inv="print"><i class="fas fa-print"></i> طباعة / PDF</button><button data-inv="close">إغلاق</button></div></div>`;
@@ -951,14 +951,6 @@ document.addEventListener('click', (e) => {
     const card = b.closest('.ord-card'), gi = +card.dataset.i, hist = getHist(), h = hist[gi]; if (!h) return;
     if (b.dataset.ord === 'again') { reorderItem(h); return; }
     if (b.dataset.ord === 'invoice') { showInvoice(h); return; }
-    if (b.dataset.ord === 'rename') {
-        const t = card.querySelector('.ord-title');
-        t.innerHTML = `<input class="ord-in" type="text" maxlength="40" value="${esc(h.title || '')}" placeholder="اسم الطلب"><button class="ord-save" data-ord="save">حفظ</button>`;
-        t.querySelector('input').focus(); return;
-    }
-    if (b.dataset.ord === 'save') {
-        h.title = str(card.querySelector('.ord-in').value); ls.set(HIST_KEY, JSON.stringify(hist)); renderOrdersPage(); toast('اتحفظ اسم الطلب');
-    }
 });
 
 function toggleCart(force) {
@@ -966,31 +958,29 @@ function toggleCart(force) {
     $('cart-sidebar').classList.toggle('open', open); $('overlay').classList.toggle('show', open);
 }
 function closeOverlays() { toggleCart(false); toggleSearch(false); const am = $('acct-modal'); if (am) am.classList.remove('open'); $('lightbox').classList.remove('show'); }
-const FIELDS = { 'cust-name': 'cust_name', 'cust-address': 'cust_address', 'cust-notes': 'cust_notes', 'cust-landmark': 'cust_landmark', 'cust-phone': 'cust_phone' };
-function loadCustomerFields() { Object.entries(FIELDS).forEach(([id, k]) => { $(id).value = ls.get(k) || ''; $(id).addEventListener('input', () => ls.set(k, $(id).value)); }); if (accountsOn()) setCustomerFields(getUser()); syncAccountUI(); }
+const FIELDS = { 'cust-name': 'cust_name', 'cust-address': 'cust_address', 'cust-landmark': 'cust_landmark', 'cust-phone': 'cust_phone' };
+function loadCustomerFields() { Object.entries(FIELDS).forEach(([id, k]) => { if (!$(id)) return; $(id).value = ls.get(k) || ''; $(id).addEventListener('input', () => ls.set(k, $(id).value)); }); if (accountsOn()) setCustomerFields(getUser()); syncAccountUI(); }
 async function checkout() {
     if (!cart.length) return alert('السلة فارغة!');
     const t = totals(); const c = cur();
     if (t.min && t.sub < t.min) return alert(`الحد الأدنى للطلب ${fmt(t.min)} ${c}`);
-    const payEl = $('cust-pay'), pay = payEl && payEl.value ? payEl.value : '', titleEl = $('cust-title'), otitle = titleEl ? str(titleEl.value) : '';
+    const payEl = $('cust-pay'), pay = payEl && payEl.value ? payEl.value : '';
     if (!getCleanPhone(S['رقم الواتساب'])) { toast('رقم واتساب المتجر غير مُعدّ في الإعدادات'); return; }
-    const name = str($('cust-name').value), addr = str($('cust-address').value), notes = str($('cust-notes').value), land = str($('cust-landmark').value), phone = str($('cust-phone').value);
+    const name = str($('cust-name').value), addr = str($('cust-address').value), notes = '', land = str($('cust-landmark').value), phone = str($('cust-phone').value);
     const needPhone = !isNo(S['رقم الموبايل إجباري']);
     if ((needPhone || phone) && !validPhone(digits(phone))) { $('cust-phone').focus(); toast('اكتب رقم موبايل صحيح (مثال: 01012345678)'); return; }
     const d = new Date(), p2 = (n) => String(n).padStart(2, '0');
     const no = 'TM-' + String(d.getFullYear()).slice(2) + p2(d.getMonth() + 1) + p2(d.getDate()) + '-' + p2(d.getHours()) + p2(d.getMinutes()) + '-' + Math.random().toString(36).slice(2, 5).toUpperCase();
-    const line = '━━━━━━━━━━━━━━━━━━', store = str(S['اسم المتجر']) || 'ترولي ماركت';
-    let m = `🧾 *فاتورة — ${str(S['نص بداية رسالة الطلب']) || 'طلب جديد من'} ${store}*\n${line}\n`;
+    const line = '━━━━━━━━━━━━━━━━━━', thin = '┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈';
+    let m = `🧾 *فاتورة*\n${line}\n`;
     m += `*رقم الفاتورة:* \u2066${no}\u2069\n*التاريخ:* ${d.toLocaleDateString('ar-EG')} — ${d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}\n`;
-    if (otitle) m += `*اسم الطلب:* ${otitle}\n`;
     if (name || phone || addr || land) { m += `${line}\n👤 *بيانات العميل*\n`; if (name) m += `الاسم: ${name}\n`; if (phone) m += `الموبايل: \u2066${digits(phone)}\u2069\n`; if (addr) m += `العنوان: ${addr}\n`; if (land) m += `علامة مميزة: ${land}\n`; }
-    m += `${line}\n🛒 *الأصناف*\n`;
-    cart.forEach((i, k) => { m += `${k + 1}) ${i.name}\n      ${i.qty} × ${fmt(i.price)} = *${fmt(i.price * i.qty)} ${c}*\n`; });
+    m += `${line}\n🛒 *الطلبات*\n`;
+    cart.forEach((i, k) => { m += `${thin}\n${k + 1}) ${i.name}\n      ${i.qty} × ${fmt(i.price)} = *${fmt(i.price * i.qty)} ${c}*\n`; });
     m += `${line}\nالمجموع: ${fmt(t.sub)} ${c}\n`;
     if (t.fee) m += `التوصيل: ${t.delivery ? fmt(t.delivery) + ' ' + c : 'مجاني'}\n`;
     m += `💰 *الإجمالي: ${fmt(t.total)} ${c}*\n`;
     if (pay) m += `💳 طريقة الدفع: ${pay}\n`;
-    if (notes) m += `📝 ملاحظات: ${notes}\n`;
     m += line;
     if (str(S['رسالة نهاية الطلب'])) m += `\n${str(S['رسالة نهاية الطلب'])}`;
     const mv = str(S['طريقة إرسال الطلب']), mode = /نص فقط/.test(mv) ? 'text' : /مشاركة/.test(mv) ? 'share' : /رابط/.test(mv) ? 'link' : 'text';
@@ -998,7 +988,7 @@ async function checkout() {
     if (mode === 'link') { try { waWin = window.open('', '_blank'); } catch (e) { } toast('بجهّز فاتورتك وبفتح الواتساب...'); }
     try {
         const url = getOrderApiUrl();
-        const hist = getHist(); hist.unshift({ no, ts: d.toISOString(), phone: digits(phone), name, address: addr, payment: pay, sub: t.sub, delivery: t.delivery, title: otitle, total: t.total, items: cart.map(i => ({ name: i.base || String(i.name).replace(/ \([^()]*\)$/, ''), variant: i.variant || '', qty: i.qty, price: i.price })) });
+        const hist = getHist(); hist.unshift({ no, ts: d.toISOString(), phone: digits(phone), name, address: addr, landmark: land, payment: pay, sub: t.sub, delivery: t.delivery, total: t.total, items: cart.map(i => ({ name: i.base || String(i.name).replace(/ \([^()]*\)$/, ''), variant: i.variant || '', qty: i.qty, price: i.price })) });
         ls.set(HIST_KEY, JSON.stringify(hist.slice(0, 10)));
         if (accountsOn() && name && validPhone(digits(phone))) { saveUser(name, digits(phone), true); }
         if (url) {
@@ -1020,7 +1010,6 @@ async function checkout() {
     } catch (e) { }
     const waUrl = (txt) => `https://wa.me/${getCleanPhone(S['رقم الواتساب'])}?text=${encodeURIComponent(txt)}`;
     if (mode === 'text') window.open(waUrl(m), '_blank');
-    if (titleEl) titleEl.value = '';
     cart = []; saveCart(); updateCartUI(); toggleCart(false); navigate('home'); window.scrollTo(0, 0);
     if (mode === 'link') {
         const full = invUrls.length ? m + '\n\n🧾 صورة الفاتورة:\n' + invUrls.join('\n') : m;
@@ -1100,3 +1089,4 @@ document.addEventListener('error', (e) => { const i = e.target; if (i && i.tagNa
 document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });
 if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
+/* ترولي ماركت فيرجن 1 */
