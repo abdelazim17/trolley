@@ -91,7 +91,7 @@ const ICON_SCOOTER = '<svg class="tms" viewBox="0 0 48 36" aria-hidden="true"><g
 
 /* ---------- تحميل الإكسيل ---------- */
 /* ---------- تحميل البيانات: عرض فوري من الكاش + تحديث في الخلفية ---------- */
-const CACHE_KEY = 'tm_data_v7', FRESH_MS = 10 * 60 * 1000;
+const CACHE_KEY = 'tm_data_v8', FRESH_MS = 10 * 60 * 1000;
 function readCache() { try { return JSON.parse(ls.get(CACHE_KEY)); } catch (e) { return null; } }
 function writeCache(obj) { try { ls.set(CACHE_KEY, JSON.stringify(obj)); } catch (e) {} }
 const XLSX_SRCS = ['xlsx.full.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'];
@@ -165,6 +165,9 @@ function initFromData(data) {
     const rowsOf = (name) => data.sheets[name] || [];
     // الإعدادات: أي شيت فيه عمودي «الإعداد» و«القيمة» (الإعدادات متقسمة على أكتر من شيت)
     Object.keys(data.sheets).forEach(n => { const rs = data.sheets[n]; if (rs.some(r => 'الإعداد' in r) && rs.some(r => 'القيمة' in r)) rs.forEach(r => { if (str(r['الإعداد']) && r['القيمة'] !== undefined) S[str(r['الإعداد'])] = r['القيمة']; }); });
+    // قيم احتياطية: لو ملف core.xlsx ما اتحمّلش أو الخانة فاضية، الموقع يستخدم رقم المتجر ده
+    const DEFAULTS = { 'رقم الواتساب': '201116159948', 'رقم التليفون المعروض': '01116159948' };
+    Object.keys(DEFAULTS).forEach(k => { if (!str(S[k])) S[k] = DEFAULTS[k]; });
     sliderData = visibleRows(rowsOf('السلايدر')).filter(r => str(r['صورة']));
     quickLinksData = visibleRows(rowsOf('أقسام سريعة')).filter(r => str(r['الاسم']));
     rowsOf('البنرات').filter(r => !isNo(r['ظاهر'])).forEach(r => { bannersData[str(r['مكان_البانر'])] = { img: str(r['صورة']), type: str(r['نوع الاستهداف']), value: str(r['القسم أو المنتج المستهدف']), title: str(r['العنوان']), sub: str(r['العنوان الفرعي']), btn: str(r['نص الزر']) }; });
@@ -1104,4 +1107,4 @@ document.addEventListener('error', (e) => { const i = e.target; if (i && i.tagNa
 document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });
 if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
-/* ترولي ماركت فيرجن 5 */
+/* ترولي ماركت فيرجن 8 */

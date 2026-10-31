@@ -200,4 +200,4 @@ function boot(){arm();vids();hero();capsule();tick();mo.observe(document.getElem
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 var n=0,iv=setInterval(function(){hero();capsule();heads();about();shares();cartExtras();paint();offers();themeSet();palette();placeBanners();payInit();footer();searchChips();viewFix();arm();vids();tick();if(++n>40)clearInterval(iv)},500);
 })();
-/* ترولي ماركت فيرجن 5 */
+/* ترولي ماركت فيرجن 8 */
