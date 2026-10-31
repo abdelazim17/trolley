@@ -58,7 +58,10 @@ function getOrderApiUrl() { const u = str(S['رابط تسجيل الطلبات'
 function getCleanPhone(raw) {
     let c = str(raw).replace(/[+\-\s()]/g, '');
     if (!c) return '';
-    if (c.startsWith('01')) c = '2' + c;
+    c = c.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g, '');
+    if (c.startsWith('0020')) c = c.slice(2);
+    if (c.startsWith('200') && c.length === 13) c = '20' + c.slice(3);   // +20 010xxxxxxxx
+    if (c.startsWith('01') && c.length === 11) c = '2' + c;
     return c;
 }
 function shade(hex, amt) {
@@ -88,10 +91,10 @@ const ICON_SCOOTER = '<svg class="tms" viewBox="0 0 48 36" aria-hidden="true"><g
 
 /* ---------- تحميل الإكسيل ---------- */
 /* ---------- تحميل البيانات: عرض فوري من الكاش + تحديث في الخلفية ---------- */
-const CACHE_KEY = 'tm_data_v6', FRESH_MS = 10 * 60 * 1000;
+const CACHE_KEY = 'tm_data_v7', FRESH_MS = 10 * 60 * 1000;
 function readCache() { try { return JSON.parse(ls.get(CACHE_KEY)); } catch (e) { return null; } }
 function writeCache(obj) { try { ls.set(CACHE_KEY, JSON.stringify(obj)); } catch (e) {} }
-const XLSX_SRCS = ['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js', 'xlsx.full.min.js'];
+const XLSX_SRCS = ['xlsx.full.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'];
 function loadXLSXLib() {
     if (window.XLSX) return Promise.resolve();
     const tryLoad = (i) => new Promise((res, rej) => {
@@ -113,9 +116,10 @@ async function fetchFresh() {
         const sheets = {}; wb.SheetNames.forEach(n => { sheets[n] = XLSX.utils.sheet_to_json(wb.Sheets[n]); });
         return { names: wb.SheetNames, sheets };
     };
-    // data.xlsx = المنتجات والأسعار | settings.xlsx = الإعدادات والسلايدر والبنرات (لو مش موجود الموقع يكمل بـ data.xlsx بس)
-    const [d, st] = await Promise.all([read('data.xlsx', true), read('settings.xlsx', false).catch(() => null)]);
-    const sheets = Object.assign({}, d.sheets, st ? st.sheets : {});
+    // data.xlsx = المنتجات والأسعار | settings.xlsx = إعدادات متغيرة (سلايدر وبنرات وتوصيل) | core.xlsx = إعدادات ثابتة
+    const [d, st, core] = await Promise.all([read('data.xlsx', true), read('settings.xlsx', false).catch(() => null), read('core.xlsx', false).catch(() => null)]);
+    // core.xlsx = إعدادات ثابتة | settings.xlsx = إعدادات متغيرة | data.xlsx = المنتجات (الأحدث بيغلب لو في تكرار)
+    const sheets = Object.assign({}, core ? core.sheets : {}, d.sheets, st ? st.sheets : {});
     return { t: Date.now(), names: d.names, sheets };   // names = شيتات data.xlsx بس (هي الأقسام)
 }
 /* تحديث صامت: من غير أي رسالة للزبون. بيتطبق فوراً لو الزبون في أول الصفحة والسلة فاضية، وإلا في الزيارة الجاية */
@@ -153,7 +157,7 @@ async function loadExcelData() {
     try { const fresh = await fetchFresh(); writeCache(fresh); initFromData(fresh); }
     catch (err) {
         console.error('Error loading Excel:', err);
-        $('global-loading').innerHTML = '<div style="color:#FF6200;font-size:1.2rem;padding:20px;">خطأ: تأكد من رفع ملف data.xlsx بشكل صحيح بجانب index.html!</div>';
+        $('global-loading').innerHTML = '<div style="color:#FF6200;font-size:1.2rem;padding:20px;">خطأ: تأكد من رفع ملفات data.xlsx و settings.xlsx و core.xlsx بجانب index.html!</div>';
     }
 }
 function initFromData(data) {
@@ -745,7 +749,7 @@ const ACC_KEY = 'tm_user', HIST_KEY = 'tm_orders';
 const accountsOn = () => !isNo(S['تفعيل حساب الزائر']);
 const getUser = () => { try { const u = JSON.parse(ls.get(ACC_KEY)); return u && u.phone ? u : null; } catch (e) { return null; } };
 const getHist = () => { try { const h = JSON.parse(ls.get(HIST_KEY)); return Array.isArray(h) ? h : []; } catch (e) { return []; } };
-const digits = (v) => str(v).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g, '');
+const digits = (v) => { let d = str(v).replace(/[٠-٩]/g, x => '٠١٢٣٤٥٦٧٨٩'.indexOf(x)).replace(/\D/g, ''); if (d.startsWith('0020')) d = d.slice(2); if (d.startsWith('200') && d.length === 13) d = '20' + d.slice(3); if (d.startsWith('201') && d.length === 12) d = '0' + d.slice(2); return d; };
 const validPhone = (p) => /^\d{10,15}$/.test(p) && (!p.startsWith('01') || p.length === 11);
 function postToSheet(payload) {
     const url = getOrderApiUrl(); if (!url) return;
@@ -1013,7 +1017,7 @@ async function checkout() {
                     const imgs = await Promise.all(blobs.map(b => new Promise(r => { const f = new FileReader(); f.onload = () => r(String(f.result).split(',')[1]); f.readAsDataURL(b); })));
                     const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 9000);
                     const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ ...order, invoiceImages: imgs }), signal: ctl.signal });
-                    clearTimeout(tm); const j = await r.json(); invUrls = (j && j.invoiceUrls) || []; sent = true;
+                    clearTimeout(tm); sent = true; try { const j = await r.json(); invUrls = (j && j.invoiceUrls) || []; } catch (e2) { }
                 } catch (e) { }
             }
             if (!sent) fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(order), keepalive: true }).catch(() => {});
@@ -1100,4 +1104,4 @@ document.addEventListener('error', (e) => { const i = e.target; if (i && i.tagNa
 document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });
 if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
-/* ترولي ماركت فيرجن 3 */
+/* ترولي ماركت فيرجن 5 */
