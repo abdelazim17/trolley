@@ -119,10 +119,15 @@ async function fetchFresh() {
     return { t: Date.now(), names: d.names, sheets };   // names = شيتات data.xlsx بس (هي الأقسام)
 }
 /* تحديث صامت: من غير أي رسالة للزبون. بيتطبق فوراً لو الزبون في أول الصفحة والسلة فاضية، وإلا في الزيارة الجاية */
+function canReload() {
+    // أمان: ريفريش تلقائي مرة واحدة كحد أقصى كل 30 دقيقة، عشان ما يحصلش تكرار أبداً
+    try { const t = +(sessionStorage.getItem('tm_rl') || 0); if (Date.now() - t < 1800000) return false; sessionStorage.setItem('tm_rl', String(Date.now())); } catch (e) { return false; }
+    return true;
+}
 function silentRefresh() {
     try {
-        const busy = cart.length || window.scrollY > 80 || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '') || document.body.classList.contains('modal-open');
-        if (!busy) location.reload();
+        const busy = cart.length || window.scrollY > 80 || /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '') || document.body.classList.contains('modal-open') || document.hidden;
+        if (!busy && canReload()) location.reload();
     } catch (e) { }
 }
 function showUpdateBar() {
@@ -137,7 +142,7 @@ async function loadExcelData() {
         let ok = true;
         try { initFromData(cached); } catch (e) { console.error(e); ok = false; ls.del(CACHE_KEY); }
         if (ok && Date.now() - (cached.t || 0) < FRESH_MS) return;       // الكاش لسه جديد
-        if (!ok) { try { const f = await fetchFresh(); writeCache(f); location.reload(); } catch (e) {} return; }
+        if (!ok) { try { const f = await fetchFresh(); writeCache(f); if (canReload()) location.reload(); } catch (e) {} return; }
         try {
             const fresh = await fetchFresh();
             if (JSON.stringify(fresh.sheets) !== JSON.stringify(cached.sheets)) { writeCache(fresh); silentRefresh(); }
@@ -311,7 +316,15 @@ function applyUI() {
 
 /* ---------- التنقل (روابط # تدعم زر الرجوع) ---------- */
 const PAGES = ['home', 'categories', 'catalog', 'about', 'orders'];
-let currentRoute = 'home'; try { currentRoute = decodeURIComponent(location.hash.replace(/^#/, '')) || sessionStorage.getItem('tm_route') || 'home'; } catch (e) { } const HIDDEN_PAGES = new Set();
+let currentRoute = 'home';
+try { history.scrollRestoration = 'manual'; } catch (e) { }
+try {
+    const nav0 = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+    const isReload = nav0.type === 'reload' || nav0.type === 'back_forward';
+    sessionStorage.removeItem('tm_route');
+    if (isReload) { if (location.hash) history.replaceState(null, '', location.pathname + location.search); window.scrollTo(0, 0); }
+    else currentRoute = decodeURIComponent(location.hash.replace(/^#/, '')) || 'home';
+} catch (e) { } const HIDDEN_PAGES = new Set();
 // التنقل بدون تغيير الرابط: الرابط يفضل نظيف (الدومين فقط) وزر الرجوع شغال
 function goHref(href) {
     const h = decodeURIComponent(href.replace(/^#/, ''));
@@ -325,7 +338,6 @@ function navigate(r) {
 }
 function route(r) {
     if (r !== undefined) currentRoute = r;
-    try { sessionStorage.setItem('tm_route', currentRoute); } catch (e) { }
     const parts = decodeURIComponent(currentRoute).split('/');
     const page = PAGES.includes(parts[0]) && !HIDDEN_PAGES.has(parts[0]) ? parts[0] : 'home';
     const sub = parts.slice(1).join('/');
@@ -541,7 +553,6 @@ function applyAboutSettings() {
     const info = [];
     if (str(S['ساعات العمل'])) info.push(`<div><i class="fas fa-clock"></i> ${esc(S['ساعات العمل'])}</div>`);
     if (str(S['العنوان'])) info.push(`<div><i class="fas fa-location-dot"></i> ${esc(S['العنوان'])}</div>`);
-    if (num(S['رسوم التوصيل'])) info.push(`<div>${ICON_SCOOTER} رسوم التوصيل ${fmt(num(S['رسوم التوصيل']))} ${esc(cur())}${num(S['حد التوصيل المجاني']) ? ` — مجاناً للطلبات فوق ${fmt(num(S['حد التوصيل المجاني']))} ${esc(cur())}` : ''}</div>`);
     if (info.length) { $('info-glass').innerHTML = info.join(''); $('info-glass').style.display = 'flex'; }
 
     const phone = getCleanPhone(S['رقم واتساب التواصل'] || S['رقم الواتساب']);
@@ -1089,4 +1100,4 @@ document.addEventListener('error', (e) => { const i = e.target; if (i && i.tagNa
 document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });
 if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
-/* ترولي ماركت فيرجن 2 */
+/* ترولي ماركت فيرجن 3 */

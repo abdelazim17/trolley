@@ -1788,3 +1788,5 @@ body.tm2.tm2.tm2 :is(h1,h2,h3,h4,.section-header h3,.fx-tile span,.price,.curren
 html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile:not(.on){background:#F4F1E9!important;border:2px solid #E6DCC8!important;box-shadow:none!important}
 html body.tm2.tm2.tm2 :is(#page-categories,#page-catalog,#page-home,#app,body) .fx-tile:not(.on):hover{background:#fff!important;border-color:#DE5718!important}
 /* ترولي ماركت فيرجن 2 */
+@media(min-width:701px){body.tm2.tm2.tm2 .fx-hero.fx-hero-img{margin:12px auto 4px!important;background:transparent!important}body.tm2.tm2.tm2 .fx-hero-img img{border-radius:30px 30px 0 0}}
+/* ترولي ماركت فيرجن 3 */

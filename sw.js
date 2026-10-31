@@ -1,5 +1,5 @@
 /* يخزن الصور على جهاز الزائر عشان الزيارات التانية تبقى أسرع وتستهلك إنترنت أقل */
-const CACHE = 'tm-img-v2', MAX = 500;
+const CACHE = 'tm-img-v2', MAX = 800;
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {
@@ -14,4 +14,4 @@ self.addEventListener('fetch', e => {
     return hit || net;   // الصورة من الكاش فوراً، وبتتحدث في الخلفية
   }));
 });
-/* ترولي ماركت فيرجن 2 */
+/* ترولي ماركت فيرجن 3 */
