@@ -1,3 +1,37 @@
+/* حماية التصميم: لو ملفات الـCSS ما اتحملتش (نت ضعيف أو لحظة الرفع) بنعيد التحميل تلقائي، والصفحة مخفية لحد ما التصميم يجهز */
+(function cssGuard() {
+  const root = document.documentElement, ready = () => root.classList.add('tm-ready');
+  const ok = () => { try { const c = getComputedStyle(root); return c.getPropertyValue('--tm-css').trim() === '1' && c.getPropertyValue('--tm-fx').trim() === '1'; } catch (e) { return true; } };
+  if (ok()) { ready(); return; }
+  let tries = 0, guard_n = 0;
+  const retry = () => { tries++; ['style.css', 'fx.css'].forEach(n => { const old = document.querySelector('link[rel=stylesheet][href^="' + n + '"]'); if (!old) return; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = n + '?r=' + Date.now() + tries; old.after(l); }); };
+  const t = setInterval(() => {
+    if (ok()) { clearInterval(t); ready(); return; }
+    const sec = (++guard_n) * 0.4;
+    if (sec >= 1.2 && tries === 0) retry();
+    if (sec >= 3.6 && tries === 1) retry();
+    if (sec >= 8) { clearInterval(t); ready(); const bar = document.createElement('div'); bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#FFF3CD;color:#333;padding:10px;text-align:center;font:16px sans-serif;direction:rtl'; bar.textContent = 'التصميم ما اتحملش كويس (النت ضعيف غالبًا). '; const b = document.createElement('button'); b.textContent = 'تحديث الصفحة'; b.style.cssText = 'padding:6px 14px;font-size:15px'; b.addEventListener('click', () => location.reload()); bar.appendChild(b); document.body.appendChild(bar); }
+  }, 400);
+})();
+/* شاشة التحميل (سلة ترولي ماركت): رسايل بتتغير لو النت بطيء أو فصل، وزر إعادة المحاولة لو فشل التحميل */
+(function loaderWatch() {
+  const g = () => document.getElementById('gl-msg'), m = t => { const e = g(); if (e) e.textContent = t; };
+  const retryBtn = () => { const box = document.getElementById('global-loading'); if (!box || document.getElementById('gl-retry')) return; const b = document.createElement('button'); b.id = 'gl-retry'; b.textContent = 'حاول تاني'; b.style.cssText = 'margin-top:16px;padding:10px 22px;font:700 16px Cairo,Tahoma,sans-serif;background:#DE5718;color:#FCFAF5;border:0;border-radius:12px'; b.addEventListener('click', () => location.reload()); box.appendChild(b); };
+  window.__tmLoadFail = t => { m(t); retryBtn(); };
+  setTimeout(() => { if (!window.__tmLoaded) m('النت بطيء شوية... لحظات ونكمل'); }, 6000);
+  setTimeout(() => { if (!window.__tmLoaded) window.__tmLoadFail('فيه مشكلة في الاتصال بالإنترنت. اتأكد من النت وبعدها اضغط «حاول تاني»'); }, 25000);
+  let bar = null, reloaded = false;
+  window.addEventListener('offline', () => {
+    if (!window.__tmLoaded) { m('مفيش إنترنت دلوقتي... هنكمل أول ما يرجع'); return; }
+    if (bar) return; bar = document.createElement('div'); bar.textContent = 'مفيش إنترنت دلوقتي — الموقع هيكمل أول ما النت يرجع';
+    bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99998;background:#5A3114;color:#FCFAF5;padding:8px;text-align:center;font:700 14px Cairo,Tahoma,sans-serif;direction:rtl'; document.body.appendChild(bar);
+  });
+  window.addEventListener('online', () => {
+    if (bar) { bar.remove(); bar = null; }
+    if (!window.__tmLoaded) { m('جاري تحميل المتجر...'); if (!reloaded) { reloaded = true; setTimeout(() => { if (!window.__tmLoaded) location.reload(); }, 800); } }
+  });
+})();
+try { ['tm_data_v1', 'tm_data_v2', 'tm_data_v3', 'tm_data_v4', 'tm_data_v5', 'tm_data_v6', 'tm_data_v7'].forEach(k => localStorage.removeItem(k)); } catch (e) { }
 /* ترولي ماركت — النسخة المدمجة. كل البيانات تتحكم فيها من data.xlsx */
 (() => {
 'use strict';
@@ -82,7 +116,6 @@ const catHref = (cat) => '#categories/' + encodeURIComponent(cat);
 
 /* ---------- المظهر ---------- */
 /* الوضع الليلي اتلغى: الموقع دايمًا بالهوية الفاتحة */
-function initTheme() { document.body.classList.remove('dark-mode'); }
 function syncThemeIcon() { }
 function toggleTheme() { }
 /* أيقونات مرسومة (SVG): سلة بشكل سلة اللوجو + سكوتر */
@@ -157,7 +190,7 @@ async function loadExcelData() {
     try { const fresh = await fetchFresh(); writeCache(fresh); initFromData(fresh); }
     catch (err) {
         console.error('Error loading Excel:', err);
-        $('global-loading').innerHTML = '<div style="color:#FF6200;font-size:1.2rem;padding:20px;">خطأ: تأكد من رفع ملفات data.xlsx و settings.xlsx و core.xlsx بجانب index.html!</div>';
+        window.__tmLoadFail && window.__tmLoadFail('مقدرناش نحمّل بيانات المتجر. اتأكد من النت وجرّب تاني.');
     }
 }
 function initFromData(data) {
@@ -214,7 +247,7 @@ function initFromData(data) {
     const hiddenOnly = new Set(Array.from(blockedNames).filter(x => !liveNames.has(x)));
     bundlesData = bundlesData.filter(r => !parseBundleNames(r).some(x => hiddenOnly.has(x)));
     applySettings(); applyUI();
-    $('global-loading').style.display = 'none';
+    window.__tmLoaded = true; $('global-loading').style.display = 'none';
     $('app-content').style.display = 'block';
     renderTodayOffers(); buildSlider(); renderQuickLinks(); applyBanners();
     initCategoryFilterBar(); applyAboutSettings(); renderCatalog(); loadCustomerFields(); updateCartUI();
@@ -1012,7 +1045,7 @@ async function checkout() {
         if (url) {
             const baseOf = (i) => i.base || String(i.name).replace(/ \([^()]*\)$/, '');
             const prodCat = (n) => { const p = allProducts.find(x => str(x['الاسم']) === n); return p ? str(p['القسم']) : ''; };
-            const order = { orderNo: no, ts: d.toISOString(), name, phone, address: addr, landmark: land, notes, payment: pay, sub: t.sub, delivery: t.delivery, total: t.total, items: cart.map(i => ({ name: baseOf(i), variant: i.variant || '', qty: i.qty, price: i.price, category: prodCat(baseOf(i)) })) };
+            const order = { orderNo: no, ts: d.toISOString(), name, phone: digits(phone), address: addr, landmark: land, notes, payment: pay, sub: t.sub, delivery: t.delivery, total: t.total, items: cart.map(i => ({ name: baseOf(i), variant: i.variant || '', qty: i.qty, price: i.price, category: prodCat(baseOf(i)) })) };
             let sent = false;
             if (mode === 'link') {
                 try {
@@ -1104,7 +1137,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverl
 // صورة بديلة لأي صورة لا تعمل
 document.addEventListener('error', (e) => { const i = e.target; if (i && i.tagName === 'IMG' && i.src !== PLACEHOLDER && !i.dataset.fb) { i.dataset.fb = 1; i.src = (window.tmFallback && window.tmFallback(i)) || PLACEHOLDER; } }, true);
 
-document.addEventListener('DOMContentLoaded', () => { initTheme(); loadExcelData(); });
+document.addEventListener('DOMContentLoaded', () => { loadExcelData(); });
 if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 })();
-/* ترولي ماركت فيرجن 8 */
+/* ترولي ماركت فيرجن 11 */

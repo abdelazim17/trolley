@@ -1,6 +1,6 @@
+:root{--tm-css:1}
 button, input, a, .qty-btn, .add-to-cart-btn { touch-action: manipulation; }
 :root { --primary: #FF6200; --primary-dark: #FF6200; --primary-dm: #FF6200; --primary-dark-dm: #FF6200; --secondary-dark: #10141A; --secondary-dm: #10141A; --secondary-dark-dm: #FF6200; --secondary: #FF6200; --bg-color: #F4F3EF; --text-color: #10141A; --card-bg: #FFF; }
-.dark-mode { --primary: var(--primary-dm); --primary-dark: var(--primary-dark-dm); --secondary: var(--secondary-dm); --secondary-dark: var(--secondary-dark-dm); --bg-color: #10141A; --text-color: #F4F3EF; --card-bg: #10141A; }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
 body { overflow-anchor: none; background-color: var(--bg-color); color: var(--text-color); transition: 0.3s; padding-top: 85px; } 
 a { text-decoration: none; color: inherit; }
@@ -22,12 +22,10 @@ a { text-decoration: none; color: inherit; }
 #cart-count { background: #fff; color: var(--primary); padding: 1px 7px; border-radius: 12px; font-size: 0.8rem; font-weight: 900; }
 
 .mobile-top-nav { display: none; position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); z-index: 990; justify-content: space-between; padding: 8px 12px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.4); gap: 5px; }
-.dark-mode .mobile-top-nav { background: rgba(16,20,26, 0.85); border: 1px solid rgba(255,255,255,0.1); }
 .mobile-top-nav a { flex: 1; display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; font-weight: 700; color: var(--text-color); gap: 4px; padding: 8px 0; border-radius: 18px; transition: 0.3s; background: transparent; border: none; text-decoration: none; }
 .mobile-top-nav a i { font-size: 1.2rem; color: var(--secondary); transition: 0.3s; margin-bottom: 2px; }
 .mobile-top-nav a.active { background: color-mix(in srgb, var(--primary) 10%, transparent); }
 .mobile-top-nav a.active i, .mobile-top-nav a.active { color: var(--primary); }
-.dark-mode .mobile-top-nav a.active { background: color-mix(in srgb, var(--primary) 15%, transparent); color: var(--primary); }
 
 .search-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); z-index: 3000; visibility: hidden; opacity: 0; transition: 0.3s; display: flex; flex-direction: column; }
 .search-modal.open { visibility: visible; opacity: 1; }
@@ -80,10 +78,6 @@ a { text-decoration: none; color: inherit; }
 .custom-option { padding: 12px 15px; cursor: pointer; transition: 0.2s; border-bottom: 1px solid #F4F3EF; }
 .custom-option:last-child { border-bottom: none; }
 .custom-option:hover { background: #F4F3EF; color: var(--primary); }
-body.dark-mode .custom-select-display { background: #10141A; border-color: rgba(16,20,26,.6); color: #fff; }
-body.dark-mode .custom-select-options { background: #10141A; border-color: rgba(16,20,26,.6); }
-body.dark-mode .custom-option { border-bottom-color: #10141A; color: #fff; }
-body.dark-mode .custom-option:hover { background: #10141A; color: var(--primary); }
 
 .catalog-container, .about-container { max-width: 1000px; margin: 30px auto; padding: 0 15px; text-align: center; }
 .about-container { display: flex; flex-direction: column; align-items: center; }
@@ -176,8 +170,6 @@ body.dark-mode .custom-option:hover { background: #10141A; color: var(--primary)
 @keyframes fadePage { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ===== إضافات النسخة المدمجة ===== */
-#global-loading { text-align: center; padding: 100px 20px; font-size: 1.5rem; width: 100%; color: var(--primary); font-weight: bold; }
-#global-loading i { font-size: 3rem; margin-bottom: 20px; display: block; }
 a.logo { text-decoration: none; }
 .announce-bar { background: var(--secondary); color: #fff; text-align: center; padding: 8px 15px; font-weight: 700; font-size: 0.95rem; margin: -15px 0 10px; }
 .banner-link { display: block; }
@@ -205,11 +197,9 @@ a.logo { text-decoration: none; }
 /* الشكل الزجاجي */
 .navbar, .mobile-top-nav { backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .navbar { background: rgba(255,255,255,0.82); }
-.dark-mode .navbar { background: rgba(16,20,26,0.82); }
 .glass-badge { background: rgba(255,255,255,0.18); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.45); text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 .social-glass-icons { gap: 16px; }
 .glass-icon { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.1)); border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 18%, transparent), inset 0 1px 0 rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.dark-mode .glass-icon { background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04)); border-color: rgba(255,255,255,0.2); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
 .info-glass { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; margin: 18px 0 5px; padding: 14px 22px; border-radius: 16px; background: color-mix(in srgb, var(--primary) 8%, transparent); border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); backdrop-filter: blur(10px); font-weight: 700; }
 .info-glass i { color: var(--primary); margin-left: 6px; }
 #about-desc-1 { font-size: 1.3rem; margin-top: 10px; font-weight: 800; }
@@ -313,4 +303,4 @@ a.cat-filter-btn { display: inline-block; }
 .site-footer { text-align: center; padding: 22px 15px 110px; color: rgba(16,20,26,.6); font-size: 0.9rem; line-height: 1.8; }
 .wa-float { position: fixed; bottom: 24px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: #FF6200; color: #fff; align-items: center; justify-content: center; font-size: 1.9rem; z-index: 900; box-shadow: 0 6px 18px rgba(0,0,0,0.3); text-decoration: none; }
 @media (max-width: 768px) { .wa-float { bottom: 100px; right: 14px; width: 50px; height: 50px; font-size: 1.7rem; } }
-/* ترولي ماركت فيرجن 8 */
+/* ترولي ماركت فيرجن 11 */
